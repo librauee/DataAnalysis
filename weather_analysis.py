@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Sep 11 08:47:36 2019
+Created on Tue Sep 17 22:09:59 2019
 
-@author: Lee
+@author: Administrator
 """
 
 from pymongo import MongoClient
@@ -11,7 +11,7 @@ import pandas as pd
 import re
 
 from pyecharts import options as opts
-from pyecharts.charts import Geo,Line,WordCloud,Pie,Parallel
+from pyecharts.charts import Geo,Line,WordCloud,Pie,Parallel,PictorialBar
 from pyecharts.globals import ChartType, SymbolType
 
 
@@ -164,7 +164,8 @@ data['风力']=data['风力'].apply(get_power)
 #        
 #geo2.render('hot.html')
 beijing=data[data['城市']=='北京']
-shanghai=data[data['城市']=='上海']
+#shanghai=data[data['城市']=='上海']
+shanghai=data[data['城市']=='阿城']
 #guangzhou=data[data['城市']=='广州']
 #shenzhen=data[data['城市']=='深圳']
 #hangzhou=data[data['城市']=='杭州']
@@ -190,10 +191,17 @@ line=(
 )
 line.render('beijing.html')
 
+shanghai['日期']=shanghai['日期'].apply(lambda x:str(x)[4:6])
+high=list(beijing.mean().values)
+high.append('北京')
 
-high=beijing.mean()
+high_shanghai=list(shanghai.mean().values)
+high_shanghai.append('上海')
 print(high)
 city_data=[]
+city_data.append(high)
+city_data.append(high_shanghai)
+print(city_data)
 parallel=(
         Parallel()
         .add_schema(
@@ -211,3 +219,126 @@ parallel=(
         .add("parallel",city_data)
         .set_global_opts(title_opts=opts.TitleOpts(title="Parallel-Category"))
         )   
+                
+parallel.render('1.html')
+
+
+location = ["山西", "四川", "西藏", "北京", "上海", "内蒙古", "云南", "黑龙江", "广东", "福建"]
+values = [13, 42, 67, 81, 86, 94, 166, 220, 249, 262]
+
+
+
+
+sunny= (
+        PictorialBar()
+        .add_xaxis(location)
+        .add_yaxis(
+            "",
+            values,
+            label_opts=opts.LabelOpts(is_show=False),
+            symbol_size=18,
+            symbol_repeat="fixed",
+            symbol_offset=[0, 0],
+            is_symbol_clip=True,
+            symbol='image://https://mat1.gtimg.com/pingjs/ext2020/weather/pc/icon/weather/day/00.png'
+        )
+        .reversal_axis()
+        .set_global_opts(
+            title_opts=opts.TitleOpts(title="晴天最多的县市"),
+            xaxis_opts=opts.AxisOpts(is_show=False),
+            yaxis_opts=opts.AxisOpts(
+                axistick_opts=opts.AxisTickOpts(is_show=False),
+                axisline_opts=opts.AxisLineOpts(
+                    linestyle_opts=opts.LineStyleOpts(opacity=0)
+                )
+            )
+        )
+    )
+sunny.render('sunny.html')
+
+cloudy=(
+        PictorialBar()
+        .add_xaxis(location)
+        .add_yaxis(
+            "",
+            values,
+            label_opts=opts.LabelOpts(is_show=False),
+            symbol_size=18,
+            symbol_repeat="fixed",
+            symbol_offset=[0, 0],
+            is_symbol_clip=True,
+            symbol='image:https://mat1.gtimg.com/pingjs/ext2020/weather/pc/icon/weather/day/01.png'
+        )
+        .reversal_axis()
+        .set_global_opts(
+            title_opts=opts.TitleOpts(title="多云最多的县市"),
+            xaxis_opts=opts.AxisOpts(is_show=False),
+            yaxis_opts=opts.AxisOpts(
+                axistick_opts=opts.AxisTickOpts(is_show=False),
+                axisline_opts=opts.AxisLineOpts(
+                    linestyle_opts=opts.LineStyleOpts(opacity=0)
+                )
+            )
+        )
+    )
+                
+cloudy.render('cloudy.html')                
+
+                
+                
+overcast=(
+        PictorialBar()
+        .add_xaxis(location)
+        .add_yaxis(
+            "",
+            values,
+            label_opts=opts.LabelOpts(is_show=False),
+            symbol_size=18,
+            symbol_repeat="fixed",
+            symbol_offset=[0, 0],
+            is_symbol_clip=True,
+            symbol='image:https://mat1.gtimg.com/pingjs/ext2020/weather/pc/icon/weather/day/02.png'
+        )
+        .reversal_axis()
+        .set_global_opts(
+            title_opts=opts.TitleOpts(title="阴天最多的县市"),
+            xaxis_opts=opts.AxisOpts(is_show=False),
+            yaxis_opts=opts.AxisOpts(
+                axistick_opts=opts.AxisTickOpts(is_show=False),
+                axisline_opts=opts.AxisLineOpts(
+                    linestyle_opts=opts.LineStyleOpts(opacity=0)
+                )
+            )
+        )
+    )
+                
+overcast.render('overcast.html')
+
+rainy=(
+        PictorialBar()
+        .add_xaxis(location)
+        .add_yaxis(
+            "",
+            values,
+            label_opts=opts.LabelOpts(is_show=False),
+            symbol_size=18,
+            symbol_repeat="fixed",
+            symbol_offset=[0, 0],
+            is_symbol_clip=True,
+            symbol='image://https://mat1.gtimg.com/pingjs/ext2020/weather/pc/icon/weather/day/07.png'
+        )
+        .reversal_axis()
+        .set_global_opts(
+            title_opts=opts.TitleOpts(title="小雨最多的县市"),
+            xaxis_opts=opts.AxisOpts(is_show=False),
+            yaxis_opts=opts.AxisOpts(
+                axistick_opts=opts.AxisTickOpts(is_show=False),
+                axisline_opts=opts.AxisLineOpts(
+                    linestyle_opts=opts.LineStyleOpts(opacity=0)
+                )
+            )
+        )
+    )
+                
+                
+rainy.render()
