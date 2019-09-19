@@ -163,78 +163,112 @@ data['风力']=data['风力'].apply(get_power)
 #    )
 #        
 #geo2.render('hot.html')
-beijing=data[data['城市']=='北京']
+#beijing=data[data['城市']=='北京']
 #shanghai=data[data['城市']=='上海']
-shanghai=data[data['城市']=='阿城']
+
 #guangzhou=data[data['城市']=='广州']
 #shenzhen=data[data['城市']=='深圳']
 #hangzhou=data[data['城市']=='杭州']
 #chengdu=data[data['城市']=='成都']
 
-beijing_nlargest=beijing.nlargest(10,'最高气温')
-
-print(beijing_nlargest)
-
-beijing['日期']=beijing['日期'].apply(lambda x:str(x)[4:6])
-
-# 月均温度 可绘折线图
-beijing_mean=beijing.groupby('日期').mean()
-beijing_high_mean=list(beijing_mean['最高气温'])
-beijing_low_mean=list(beijing_mean['最低气温'])
-line=(
-      Line()
-      .add_xaxis(['1月','2月','3月','4月','5月','6月','7月','8月'])
-      .add_yaxis("月均最高温度",beijing_high_mean)
-      .add_yaxis("月均最低温度",beijing_low_mean)
-      .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
-      .set_global_opts(title_opts=opts.TitleOpts(title="北京气温"))
-)
-line.render('beijing.html')
-
-shanghai['日期']=shanghai['日期'].apply(lambda x:str(x)[4:6])
-high=list(beijing.mean().values)
-high.append('北京')
-
-high_shanghai=list(shanghai.mean().values)
-high_shanghai.append('上海')
-print(high)
-city_data=[]
-city_data.append(high)
-city_data.append(high_shanghai)
-print(city_data)
-parallel=(
-        Parallel()
-        .add_schema(
-                [
-                opts.ParallelAxisOpts(dim=0, name="平均最低气温"),
-                opts.ParallelAxisOpts(dim=1, name="平均最高气温"),
-                opts.ParallelAxisOpts(dim=2, name="平均风力"),
-                 opts.ParallelAxisOpts(dim=3,
-                    name="城市",
-                    type_="category",
-                    data=["北京", "上海"],
-                    )
-                ]
-                )
-        .add("parallel",city_data)
-        .set_global_opts(title_opts=opts.TitleOpts(title="Parallel-Category"))
-        )   
-                
-parallel.render('1.html')
-
-
-location = ["山西", "四川", "西藏", "北京", "上海", "内蒙古", "云南", "黑龙江", "广东", "福建"]
-values = [13, 42, 67, 81, 86, 94, 166, 220, 249, 262]
+#beijing_nlargest=beijing.nlargest(10,'最高气温')
+#
+#print(beijing_nlargest)
+#
+#beijing['日期']=beijing['日期'].apply(lambda x:str(x)[4:6])
+#
+## 月均温度 可绘折线图
+#beijing_mean=beijing.groupby('日期').mean()
+#beijing_high_mean=list(beijing_mean['最高气温'])
+#beijing_low_mean=list(beijing_mean['最低气温'])
+#line=(
+#      Line()
+#      .add_xaxis(['1月','2月','3月','4月','5月','6月','7月','8月'])
+#      .add_yaxis("月均最高温度",beijing_high_mean)
+#      .add_yaxis("月均最低温度",beijing_low_mean)
+#      .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
+#      .set_global_opts(title_opts=opts.TitleOpts(title="北京气温"))
+#)
+#line.render('beijing.html')
+#
+#shanghai['日期']=shanghai['日期'].apply(lambda x:str(x)[4:6])
+#high=list(beijing.mean().values)
+#high.append('北京')
+#
+#high_shanghai=list(shanghai.mean().values)
+#high_shanghai.append('上海')
+#print(high)
+#city_data=[]
+#city_data.append(high)
+#city_data.append(high_shanghai)
+#print(city_data)
+#parallel=(
+#        Parallel()
+#        .add_schema(
+#                [
+#                opts.ParallelAxisOpts(dim=0, name="平均最低气温"),
+#                opts.ParallelAxisOpts(dim=1, name="平均最高气温"),
+#                opts.ParallelAxisOpts(dim=2, name="平均风力"),
+#                 opts.ParallelAxisOpts(dim=3,
+#                    name="城市",
+#                    type_="category",
+#                    data=["北京", "上海"],
+#                    )
+#                ]
+#                )
+#        .add("parallel",city_data)
+#        .set_global_opts(title_opts=opts.TitleOpts(title="Parallel-Category"))
+#        )   
+#                
+#parallel.render('1.html')
 
 
+xianning=data[data['城市']=='咸宁']
+weather_counts=xianning['天气情况'].value_counts()
+
+"""
+
+"""
+
+a=data.groupby('城市')['天气情况'].value_counts()
+
+# print(a['沧州新华']['晴'])
+def get_top_ten(wea):
+    
+    keys=[]
+    top10=[] 
+    top10_city=[]
+    for key,_ in data.groupby('城市'):
+        keys.append(key)
+    for key in keys[:10]:
+        top10_city.append(key)
+        top10.append(a['{}'.format(key)]['{}'.format(wea)])
+    for key in keys[10:]:
+        min_wea=min(top10)
+        try:
+            if a['{}'.format(key)]['{}'.format(wea)]>min_wea:
+                top10_city[top10.index(min_wea)]=key
+                top10[top10.index(min_wea)]=a['{}'.format(key)]['{}'.format(wea)]
+        except:
+            pass
+    
+    return top10,top10_city
 
 
-sunny= (
+    
+sunny_top10,sunny_top10_city=get_top_ten('晴')
+sunny_dict=dict(zip(sunny_top10_city,sunny_top10))
+sorted_sunny_dict=dict(sorted(sunny_dict.items(),key=lambda x:x[1],reverse=False))
+
+sunny_top10=list(sorted_sunny_dict.values())
+sunny_top10_city=list(sorted_sunny_dict.keys())
+
+sunny=(
         PictorialBar()
-        .add_xaxis(location)
+        .add_xaxis([str(x) for x in sunny_top10_city])
         .add_yaxis(
             "",
-            values,
+            [int(x) for x in sunny_top10],
             label_opts=opts.LabelOpts(is_show=False),
             symbol_size=18,
             symbol_repeat="fixed",
@@ -244,7 +278,7 @@ sunny= (
         )
         .reversal_axis()
         .set_global_opts(
-            title_opts=opts.TitleOpts(title="晴天最多的县市"),
+            title_opts=opts.TitleOpts(title="晴天最多的十个县市"),
             xaxis_opts=opts.AxisOpts(is_show=False),
             yaxis_opts=opts.AxisOpts(
                 axistick_opts=opts.AxisTickOpts(is_show=False),
@@ -256,22 +290,34 @@ sunny= (
     )
 sunny.render('sunny.html')
 
+
+cloudy_top10,cloudy_top10_city=get_top_ten('多云')
+
+cloudy_dict=dict(zip(cloudy_top10_city,cloudy_top10))
+sorted_cloudy_dict=dict(sorted(cloudy_dict.items(),key=lambda x:x[1],reverse=False))
+
+cloudy_top10=list(sorted_cloudy_dict.values())
+cloudy_top10_city=list(sorted_cloudy_dict.keys())
+
+
+
+
 cloudy=(
         PictorialBar()
-        .add_xaxis(location)
+        .add_xaxis([str(x) for x in cloudy_top10_city])
         .add_yaxis(
             "",
-            values,
+            [int(x) for x in cloudy_top10],
             label_opts=opts.LabelOpts(is_show=False),
             symbol_size=18,
             symbol_repeat="fixed",
             symbol_offset=[0, 0],
             is_symbol_clip=True,
-            symbol='image:https://mat1.gtimg.com/pingjs/ext2020/weather/pc/icon/weather/day/01.png'
+            symbol='image://https://mat1.gtimg.com/pingjs/ext2020/weather/pc/icon/weather/day/01.png'
         )
         .reversal_axis()
         .set_global_opts(
-            title_opts=opts.TitleOpts(title="多云最多的县市"),
+            title_opts=opts.TitleOpts(title="多云最多的十个县市"),
             xaxis_opts=opts.AxisOpts(is_show=False),
             yaxis_opts=opts.AxisOpts(
                 axistick_opts=opts.AxisTickOpts(is_show=False),
@@ -284,24 +330,30 @@ cloudy=(
                 
 cloudy.render('cloudy.html')                
 
-                
+overcast_top10,overcast_top10_city=get_top_ten('阴')
+
+overcast_dict=dict(zip(overcast_top10_city,overcast_top10))
+sorted_overcast_dict=dict(sorted(overcast_dict.items(),key=lambda x:x[1],reverse=False))
+
+overcast_top10=list(sorted_overcast_dict.values())
+overcast_top10_city=list(sorted_overcast_dict.keys())                
                 
 overcast=(
         PictorialBar()
-        .add_xaxis(location)
+        .add_xaxis([str(x) for x in overcast_top10_city])
         .add_yaxis(
             "",
-            values,
+            [int(x) for x in overcast_top10],
             label_opts=opts.LabelOpts(is_show=False),
             symbol_size=18,
             symbol_repeat="fixed",
             symbol_offset=[0, 0],
             is_symbol_clip=True,
-            symbol='image:https://mat1.gtimg.com/pingjs/ext2020/weather/pc/icon/weather/day/02.png'
+            symbol='image://https://mat1.gtimg.com/pingjs/ext2020/weather/pc/icon/weather/day/02.png'
         )
         .reversal_axis()
         .set_global_opts(
-            title_opts=opts.TitleOpts(title="阴天最多的县市"),
+            title_opts=opts.TitleOpts(title="阴天最多的十个县市"),
             xaxis_opts=opts.AxisOpts(is_show=False),
             yaxis_opts=opts.AxisOpts(
                 axistick_opts=opts.AxisTickOpts(is_show=False),
@@ -314,12 +366,22 @@ overcast=(
                 
 overcast.render('overcast.html')
 
+
+rainy_top10,rainy_top10_city=get_top_ten('小雨')
+
+rainy_dict=dict(zip(rainy_top10_city,rainy_top10))
+sorted_rainy_dict=dict(sorted(rainy_dict.items(),key=lambda x:x[1],reverse=False))
+
+rainy_top10=list(sorted_rainy_dict.values())
+rainy_top10_city=list(sorted_rainy_dict.keys())  
+
+
 rainy=(
         PictorialBar()
-        .add_xaxis(location)
+        .add_xaxis([str(x) for x in rainy_top10_city])
         .add_yaxis(
             "",
-            values,
+            [int(x) for x in rainy_top10],
             label_opts=opts.LabelOpts(is_show=False),
             symbol_size=18,
             symbol_repeat="fixed",
@@ -329,7 +391,7 @@ rainy=(
         )
         .reversal_axis()
         .set_global_opts(
-            title_opts=opts.TitleOpts(title="小雨最多的县市"),
+            title_opts=opts.TitleOpts(title="小雨最多的十个县市"),
             xaxis_opts=opts.AxisOpts(is_show=False),
             yaxis_opts=opts.AxisOpts(
                 axistick_opts=opts.AxisTickOpts(is_show=False),
@@ -341,4 +403,4 @@ rainy=(
     )
                 
                 
-rainy.render()
+rainy.render('rainy.html')
