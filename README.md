@@ -20,13 +20,13 @@
 ### 台风生成
 
 一年之中最早生成的台风是1955年的一号台风Violet，它生成于1955年1月1日早上8时，元旦佳节，台风也来凑热闹~
-![pic](https://github.com/librauee/DataAnalysis/blob/master/%E5%8F%B0%E9%A3%8E%E5%88%86%E6%9E%90/b.png)
+![pic](https://github.com/librauee/DataAnalysis/blob/master/%E5%8F%B0%E9%A3%8E%E5%88%86%E6%9E%90/b.jpg)
 
 ### 台风生命
 
 从数据中计算得到，台风的平均生命为178小时（约7天）。
 其中，寿命最长的台风是发于1972年7月5日，终止于1972年7月30日的台风Rita，历时600小时。自7月9日到7月12日，风力保持在惊人的17级，平均风速达到了65米/每秒。即下图路径中的红色部分。
-![pic](https://github.com/librauee/DataAnalysis/blob/master/%E5%8F%B0%E9%A3%8E%E5%88%86%E6%9E%90/c.png)
+![pic](https://github.com/librauee/DataAnalysis/blob/master/%E5%8F%B0%E9%A3%8E%E5%88%86%E6%9E%90/c.jpg)
 
 
 ## No.2 英文名分析
