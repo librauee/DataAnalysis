@@ -11,7 +11,7 @@ import pandas as pd
 import re
 
 from pyecharts import options as opts
-from pyecharts.charts import Geo,Line,WordCloud,Pie,Parallel,PictorialBar
+from pyecharts.charts import Geo,Line,WordCloud,Pie,Parallel,PictorialBar,Bar
 from pyecharts.globals import ChartType, SymbolType
 
 
@@ -45,16 +45,20 @@ data=data[data['日期']>20190000]
 
 data.drop_duplicates(subset=['城市','日期'],keep='first',inplace=True)
 
-def get_power(rank):
+"""
+全国风最大最小的城市
+"""
+
+#def get_power(rank):
+#    
+#    power_rank=re.findall(r'\d{1,}级',rank)
+#    if power_rank:
+#        return int(power_rank[0][:-1])
+#    else:
+#        return 0
+#    
     
-    power_rank=re.findall(r'\d{1,}级',rank)
-    if power_rank:
-        return int(power_rank[0][:-1])
-    else:
-        return 0
-    
-# 全国风最大最小的城市    
-data['风力']=data['风力'].apply(get_power)
+#data['风力']=data['风力'].apply(get_power)
 #wind_power_rank=data.sort_values(by='风力',ascending=False)
 #print(wind_power_rank[:10])
 #
@@ -86,38 +90,44 @@ data['风力']=data['风力'].apply(get_power)
 #
 #cloud.render('2.html')
 
+"""
+风向频率统计
+"""
 
 
 
+print(data[data['最高气温']==max(data['最高气温'])])
+#print(data.loc[data['城市']=='北京','最高气温'].max())         
 
-#print(data[data['最高气温']==max(data['最高气温'])])
-##print(data.loc[data['城市']=='北京','最高气温'].max())         
-#
-#print(data[data['最低气温']==min(data['最低气温'])])
-#print(data.sort_values("最高气温",ascending=True))
-#print(data.sort_values("最低气温",ascending=True))
-#
-#
+print(data[data['最低气温']==min(data['最低气温'])])
+print(data.sort_values("最高气温",ascending=True))
+print(data.sort_values("最低气温",ascending=True))
 
-## 风向频率
-#direct=data['风向'].value_counts()
-#print(direct)
-## print(len(set(data['城市'])))
-#
-## wind_freq=[list(z) for z in zip(list(direct.index),list(direct.values))]
-#wind_freq=[['东南风', 201969], ['东北风', 194769], ['西南风', 162898], ['西北风', 143694], ['北风', 15666], ['南风', 12172], ['东风', 4081], ['西风', 3321], ['无持续风向', 1750], ['西南偏南风', 316], ['西南偏西风', 315], ['西北偏西风', 292], ['东南偏东风', 284], ['东北偏东风', 282], ['西北偏北风', 246], ['东北偏北风', 241], ['东南偏南风', 235], ['微风', 133]]
-#pie=(
-#    Pie()
-#    .add("", wind_freq)
-#    .set_global_opts(title_opts=opts.TitleOpts(title="风向频数图"),
-#                     legend_opts=opts.LegendOpts(is_show=False)
-#                     )
-#    .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}:{c}"))
-#     )
-#
-#pie.render('wind.html')   
 
-# 全国最热、最冷
+
+# 风向频率
+direct=data['风向'].value_counts()
+print(direct)
+print(len(set(data['城市'])))
+
+# wind_freq=[list(z) for z in zip(list(direct.index),list(direct.values))]
+wind_freq=[['东南风', 201969], ['东北风', 194769], ['西南风', 162898], ['西北风', 143694], ['北风', 15666], ['南风', 12172], ['东风', 4081], ['西风', 3321], ['无持续风向', 1750], ['西南偏南风', 316], ['西南偏西风', 315], ['西北偏西风', 292], ['东南偏东风', 284], ['东北偏东风', 282], ['西北偏北风', 246], ['东北偏北风', 241], ['东南偏南风', 235], ['微风', 133]]
+pie=(
+    Pie()
+    .add("", wind_freq)
+    .set_global_opts(title_opts=opts.TitleOpts(title="风向频数图"),
+                     legend_opts=opts.LegendOpts(is_show=False)
+                     )
+    .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}:{c}"))
+     )
+
+pie.render('wind.html')   
+
+
+"""
+全国最热、最冷的城市
+"""
+
 #data_nlargest=data.nlargest(10,'最高气温')
 #data_nsmallest=data.sort_values(by='最低气温',ascending=True)
 #print(data_nsmallest[:10])
@@ -141,7 +151,7 @@ data['风力']=data['风力'].apply(get_power)
 #        .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
 #        .set_global_opts(
 #            visualmap_opts=opts.VisualMapOpts(is_show=False),
-#            title_opts=opts.TitleOpts(title="全国最冷的十座城市"),
+#            title_opts=opts.TitleOpts(title="全国最冷的十个县市"),
 #        )
 #    )
 #
@@ -158,18 +168,55 @@ data['风力']=data['风力'].apply(get_power)
 #        .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
 #        .set_global_opts(
 #            visualmap_opts=opts.VisualMapOpts(is_show=False),
-#            title_opts=opts.TitleOpts(title="全国最热的十座城市"),
+#            title_opts=opts.TitleOpts(title="全国最热的十个县市"),
 #        )
 #    )
 #        
 #geo2.render('hot.html')
-#beijing=data[data['城市']=='北京']
-#shanghai=data[data['城市']=='上海']
+
+
+beijing=data[data['城市']=='北京']
+shanghai=data[data['城市']=='上海']
 
 #guangzhou=data[data['城市']=='广州']
 #shenzhen=data[data['城市']=='深圳']
 #hangzhou=data[data['城市']=='杭州']
 #chengdu=data[data['城市']=='成都']
+
+def get_high(data):
+    high_list=[]
+    date=[20190800+i for i in range(1,32)]
+    for i in date:
+        high=data[data['日期']==i]
+        high_list.append(high['最高气温'])
+    return high_list
+
+def get_low(data):
+    low_list=[]
+    date=[20190800+i for i in range(1,32)]
+    for i in date:
+        low=data[data['日期']==i]
+        low_list.append(low['最低气温'])
+    return low_list
+
+high_beijing=get_high(beijing)
+low_beijing=get_low(beijing)
+high_shanghai=get_high(shanghai)
+def bar_datazoom_slider() -> Bar:
+    c = (
+        Bar()
+        .add_xaxis(["8月"+str(i)+"日" for i in range(1,32)])
+        .add_yaxis("最高温度（℃）", [int(tem) for tem in high_beijing])
+        .add_yaxis("最低温度（℃）", [int(tem) for tem in low_beijing])
+        .set_global_opts(
+            title_opts=opts.TitleOpts(title="北京2019年8月每日气温"),
+            datazoom_opts=opts.DataZoomOpts(),
+        )
+    )
+    return c
+
+a=bar_datazoom_slider()
+a.render('bar.html')
 
 #beijing_nlargest=beijing.nlargest(10,'最高气温')
 #
