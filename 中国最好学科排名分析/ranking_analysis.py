@@ -18,51 +18,51 @@ data=pd.DataFrame(list(db['subject'].find()))
 """
 上榜学科最多的十所高校
 """
-#all_subject=data['school'].value_counts()[:10]
-#
-#school_top10=list(all_subject.index)
-#number=[int(j) for j in all_subject.values]
-#
-#bar1=(
-#        Bar()
-#        .add_xaxis(school_top10[::-1])
-#        .add_yaxis("", number[::-1], category_gap="50%")
-#        .reversal_axis()
-#        .set_global_opts(title_opts=opts.TitleOpts(title="上榜学科最多的十所高校"))
-#    )
-#bar1.render('上榜学科最多的学校.html')
+all_subject=data['school'].value_counts()[:10]
+
+school_top10=list(all_subject.index)
+number=[int(j) for j in all_subject.values]
+
+bar1=(
+        Bar()
+        .add_xaxis(school_top10[::-1])
+        .add_yaxis("", number[::-1], category_gap="50%")
+        .reversal_axis()
+        .set_global_opts(title_opts=opts.TitleOpts(title="上榜学科最多的十所高校"))
+    )
+bar1.render('上榜学科最多的学校.html')
 
 
 """
 排名前10%学科最多的十所高校
 """
 
-#def correct(percent):
-#    percent=percent[1:-1]
-#    return int(percent)
-#
-#data['percent']=data['percent'].apply(correct)
-#
-#percent_top=data[data['percent']<=10]
-#percent_top_count=percent_top.groupby('school').count()['ranking']
-#percent_top_count=percent_top_count.sort_values(ascending=False)
-#number2=list(percent_top_count.values)[:10]
-#
-#pie1=(
-#      Pie()
-#        .add(
-#            "",
-#            [list(z) for z in zip(list(percent_top_count.index)[:10], [int(i) for i in number2])],
-#            radius=["20%", "75%"],
-#
-#            label_opts=opts.LabelOpts(formatter="{b}: {c}"),
-#        )
-#
-#        .set_global_opts(title_opts=opts.TitleOpts(title="排名前10%学科最多的十所高校"),
-#                         legend_opts=opts.LegendOpts(is_show=False))
-#      )
-#
-#pie1.render('排名前10%学科最多的高校.html')
+def correct(percent):
+    percent=percent[1:-1]
+    return int(percent)
+
+data['percent']=data['percent'].apply(correct)
+
+percent_top=data[data['percent']<=10]
+percent_top_count=percent_top.groupby('school').count()['ranking']
+percent_top_count=percent_top_count.sort_values(ascending=False)
+number2=list(percent_top_count.values)[:10]
+
+pie1=(
+      Pie()
+        .add(
+            "",
+            [list(z) for z in zip(list(percent_top_count.index)[:10], [int(i) for i in number2])],
+            radius=["20%", "75%"],
+
+            label_opts=opts.LabelOpts(formatter="{b}: {c}"),
+        )
+
+        .set_global_opts(title_opts=opts.TitleOpts(title="排名前10%学科最多的十所高校"),
+                         legend_opts=opts.LegendOpts(is_show=False))
+      )
+
+pie1.render('排名前10%学科最多的高校.html')
 
 
 """
@@ -72,14 +72,14 @@ ranking_top=data[data['ranking']=='1']
 ranking_top_count=ranking_top.groupby('school').count()['ranking']
 ranking_top_count=ranking_top_count.sort_values(ascending=False)
 print(ranking_top_count)
-#
-#words=zip(list(ranking_top_count.index)[:21],[int(i) for i in ranking_top_count.values][:21])
-#wc=(
-#        WordCloud()
-#        .add("", words, word_size_range=[20, 100])
-#        .set_global_opts(title_opts=opts.TitleOpts(title="全国排名第一的学科最多的高校"))
-#    )
-#wc.render('全国排名第一的学科最多的高校.html')
+
+words=zip(list(ranking_top_count.index)[:21],[int(i) for i in ranking_top_count.values][:21])
+wc=(
+        WordCloud()
+        .add("", words, word_size_range=[20, 100])
+        .set_global_opts(title_opts=opts.TitleOpts(title="全国排名第一的学科最多的高校"))
+    )
+wc.render('全国排名第一的学科最多的高校.html')
 
 
 """
